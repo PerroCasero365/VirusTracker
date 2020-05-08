@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_sintomas"
+        android:title="Síntomas"
+        android:visible="true" />
+    <item
+        android:id="@+id/menu_informacion"
+        android:title="Información" />
+    <item
+        android:id="@+id/menu_consejos_higiene"
+        android:title="Consejos de higiene" />
+    <item
+        android:id="@+id/menu_ayuda"
+        android:title="Ayuda" />
+</menu>
