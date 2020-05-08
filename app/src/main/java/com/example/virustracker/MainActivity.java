@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         switch(item.getItemId())
         {
             case R.id.menu_sintomas:
-                Toast.makeText(this, "Menu síntomas", Toast.LENGTH_LONG).show();
+               // Toast.makeText(this, "Menu síntomas", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.menu_informacion:
