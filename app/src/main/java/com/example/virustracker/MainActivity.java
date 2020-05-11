@@ -5,6 +5,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -60,22 +61,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        Intent intent;
         switch(item.getItemId())
         {
             case R.id.menu_sintomas:
-               // Toast.makeText(this, "Menu síntomas", Toast.LENGTH_LONG).show();
+                intent = new Intent(this, Activity_sintomas.class);
+                startActivity(intent);
                 break;
 
             case R.id.menu_informacion:
-                Toast.makeText(this, "Menu Información", Toast.LENGTH_LONG).show();
+                intent = new Intent(this, Activity_informacion.class);
+                startActivity(intent);
                 break;
 
             case R.id.menu_consejos_higiene:
-                Toast.makeText(this, "Menu Consejos de higiene", Toast.LENGTH_LONG).show();
+                intent = new Intent(this, Activity_consejos_higiene.class);
+                startActivity(intent);
                 break;
 
             case R.id.menu_ayuda:
-                Toast.makeText(this, "Menu ayuda", Toast.LENGTH_LONG).show();
+                intent = new Intent(this, Activity_ayuda_usuario.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -84,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     //evento vacío para que no vuelva a la pantalla de carga
     public void onBackPressed(){ }
 
-    public void cambia0rEstado(View v)
+    public void cambiaEstado(View v)
     {
         redondear(R.drawable.amarillo);
     }

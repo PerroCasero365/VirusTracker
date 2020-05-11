@@ -21,7 +21,7 @@
         android:layout_width="123dp"
         android:layout_height="58dp"
         android:layout_marginTop="150dp"
-        android:onClick="cambia0rEstado"
+        android:onClick="cambiaEstado"
         android:text="Mi estado"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
