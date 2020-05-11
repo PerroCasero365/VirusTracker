@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity_encuesta"></activity>
+        <activity android:name=".Activity_encuesta_positivo"></activity>
+        <activity android:name=".Activity_encuesta" />
         <activity android:name=".Activity_ayuda_usuario" />
         <activity android:name=".Activity_consejos_higiene" />
         <activity android:name=".Activity_informacion" />

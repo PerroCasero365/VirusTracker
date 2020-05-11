@@ -25,7 +25,9 @@ public class Pantalla_carga extends AppCompatActivity
             @Override
             public void run()
             {
-                Intent intent = new Intent(Pantalla_carga.this, MainActivity.class);
+                //Intent intent = new Intent(Pantalla_carga.this, MainActivity.class);
+                Intent intent = new Intent(Pantalla_carga.this, Activity_encuesta_positivo.class);
+
                 startActivity(intent);
             }
         },4000);

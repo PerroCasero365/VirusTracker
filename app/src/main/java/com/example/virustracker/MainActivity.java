@@ -92,10 +92,7 @@ public class MainActivity extends AppCompatActivity
 
     public void cambiaEstado(View v)
     {
-        Intent intent = new Intent(this, Activity_encuesta.class);
-        startActivity(intent);
-        //redondear(R.drawable.amarillo);
-
+        redondear(R.drawable.amarillo);
     }
 
 
