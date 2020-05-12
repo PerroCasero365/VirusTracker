@@ -48,8 +48,6 @@ public class Activity_encuesta extends AppCompatActivity {
         if(resPositivas >= 4){
             //Color amarillo
             saveValuePreference(getApplicationContext(), R.drawable.amarillo);
-            Toast toast1 = Toast.makeText(getApplicationContext(), "AMARILLO", Toast.LENGTH_SHORT);
-            toast1.show();
         }
 
         Intent intent = new Intent(this, MainActivity.class);

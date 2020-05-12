@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,6 +102,17 @@ public class MainActivity extends AppCompatActivity
         return  preferences.getInt("color", R.drawable.verde);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == 2001 && requestCode == 1001)
+        {
+            if (data.hasExtra("nuevoEstado"))
+            {
+                redondear(getValuePreferenceColor(getApplicationContext()));
+            }
+        }
+    }
 
 
 

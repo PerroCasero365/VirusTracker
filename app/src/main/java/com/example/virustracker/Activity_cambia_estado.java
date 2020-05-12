@@ -5,6 +5,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -71,7 +72,7 @@ public class Activity_cambia_estado extends AppCompatActivity {
         colorEstado.setImageDrawable(getDrawable(color));
         colorEstado.setLayoutParams(new LinearLayout.LayoutParams(400,400));
 
-        //redondear imageview
+        redondear2(color, colorEstado);
         //constraint a los bordes
 
 
@@ -83,29 +84,29 @@ public class Activity_cambia_estado extends AppCompatActivity {
         linearInterno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //cambiar el estado de las SharedPreferences al tag del layout
-                //el tag del layout clicado es el nombre de su color
-                //if(linearInterno.getTag() = "verde") preferencia = R.drawable.verde
-                //y así con los otros
                 if(linearInterno.getTag().equals("verde"))
                 {
-                    Toast.makeText(getApplicationContext(), "Estado verde", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Se ha cambia tu estado a verde", Toast.LENGTH_SHORT).show();
                     saveValuePreferenceColor(getApplicationContext(), R.drawable.verde);
-                    finish();
+                    devolverValor(linearInterno);
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), "Estado rojo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Se ha cambia tu estado a rojo", Toast.LENGTH_SHORT).show();
                     saveValuePreferenceColor(getApplicationContext(), R.drawable.rojo);
-                    finish();
+                    devolverValor(linearInterno);
                 }
-
-
-
             }
         });
 
         return linearInterno;
+    }
+
+    public void devolverValor(LinearLayout linearInterno) {
+        Intent i = new Intent();
+        i.putExtra("nuevoEstado", (String) linearInterno.getTag());
+        setResult(2001, i);
+        finish();
     }
 
     public void saveValuePreferenceColor(Context context, int color) {
@@ -135,5 +136,21 @@ public class Activity_cambia_estado extends AppCompatActivity {
         ImageView estado = findViewById(R.id.estado_actual);
         estado.setImageDrawable(roundedDrawable);
     }
+
+    public void redondear2(int id, ImageView imageView)
+    {
+        //obtenemos el drawable original
+        Drawable originalDrawable = getResources().getDrawable(id);
+        Bitmap originalBitmap = ((BitmapDrawable) originalDrawable).getBitmap();
+
+        //creamos el drawable redondeado
+        RoundedBitmapDrawable roundedDrawable = RoundedBitmapDrawableFactory.create(getResources(), originalBitmap);
+        float num = 2000;
+        //asignamos el CornerRadius
+        roundedDrawable.setCornerRadius(num);
+        imageView.setImageDrawable(roundedDrawable);
+    }
+
+
 
 }
