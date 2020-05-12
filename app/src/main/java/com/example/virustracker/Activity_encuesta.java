@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 public class Activity_encuesta extends AppCompatActivity {
+    private String PREFS_KEY = "mispreferencias";
     CheckBox diarrea, tos, fiebre, garganta, gusto, respirar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,20 @@ public class Activity_encuesta extends AppCompatActivity {
 
         if(resPositivas >= 4){
             //Color amarillo
+            saveValuePreference(getApplicationContext(), R.drawable.amarillo);
             Toast toast1 = Toast.makeText(getApplicationContext(), "AMARILLO", Toast.LENGTH_SHORT);
             toast1.show();
         }
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    public void saveValuePreference(Context context, int color) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = settings.edit();
+        editor.putInt("color", color);
+        editor.commit();
     }
 }

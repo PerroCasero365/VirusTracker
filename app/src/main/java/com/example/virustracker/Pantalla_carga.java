@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 public class Pantalla_carga extends AppCompatActivity
 {
+    private String PREFS_KEY = "mispreferencias";
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,8 +39,6 @@ public class Pantalla_carga extends AppCompatActivity
                     intent = new Intent(Pantalla_carga.this, Activity_encuesta_positivo.class);
                     saveValuePreference(getApplicationContext(), false);
                 }
-                //Intent intent = new Intent(Pantalla_carga.this, MainActivity.class);
-                //Intent intent = new Intent(Pantalla_carga.this, Activity_encuesta_positivo.class);
 
                 startActivity(intent);
             }
@@ -58,13 +57,12 @@ public class Pantalla_carga extends AppCompatActivity
         virus.startAnimation(animation);
     }
 
-    private String PREFS_KEY = "mispreferencias";
-
     public void saveValuePreference(Context context, Boolean mostrar) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor;
         editor = settings.edit();
-        editor.putBoolean("license", mostrar);
+        editor.putBoolean("encuesta", mostrar);
+        editor.putInt("color", R.drawable.verde);
         editor.commit();
     }
 
@@ -72,6 +70,6 @@ public class Pantalla_carga extends AppCompatActivity
 
     public boolean getValuePreference(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
-        return  preferences.getBoolean("license", true);
+        return  preferences.getBoolean("encuesta", true);
     }
 }

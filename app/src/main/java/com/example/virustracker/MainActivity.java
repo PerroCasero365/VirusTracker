@@ -6,6 +6,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,11 +23,13 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
+    private String PREFS_KEY = "mispreferencias";
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        redondear(getValuePreferenceColor(getApplicationContext()));
 
     }
 
@@ -39,13 +42,10 @@ public class MainActivity extends AppCompatActivity
 
         //creamos el drawable redondeado
         RoundedBitmapDrawable roundedDrawable = RoundedBitmapDrawableFactory.create(getResources(), originalBitmap);
-
         float num = 2000;
         //asignamos el CornerRadius
         roundedDrawable.setCornerRadius(num);
-
         ImageView estado = findViewById(R.id.estado_usuario);
-
         estado.setImageDrawable(roundedDrawable);
     }
 
@@ -92,7 +92,14 @@ public class MainActivity extends AppCompatActivity
 
     public void cambiaEstado(View v)
     {
-        redondear(R.drawable.amarillo);
+        //redondear(R.drawable.amarillo);
+        //Intent intent = new Intent(this, Activity_cambia_estado.class);
+        //startActivity(intent);
+    }
+
+    public int getValuePreferenceColor(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        return  preferences.getInt("color", R.drawable.verde);
     }
 
 
