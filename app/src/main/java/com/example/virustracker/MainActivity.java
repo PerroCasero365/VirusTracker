@@ -92,9 +92,8 @@ public class MainActivity extends AppCompatActivity
 
     public void cambiaEstado(View v)
     {
-        //redondear(R.drawable.amarillo);
-        //Intent intent = new Intent(this, Activity_cambia_estado.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, Activity_cambia_estado.class);
+        startActivityForResult(intent, 1001);
     }
 
     public int getValuePreferenceColor(Context context) {
