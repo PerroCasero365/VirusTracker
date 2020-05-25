@@ -19,11 +19,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
+    boolean bluetooth = true;
     private String PREFS_KEY = "mispreferencias";
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -95,6 +98,25 @@ public class MainActivity extends AppCompatActivity
     {
         Intent intent = new Intent(this, Activity_cambia_estado.class);
         startActivityForResult(intent, 1001);
+    }
+
+    public void GestionBluetooth(View v)
+    {
+        if(bluetooth){
+            Toast.makeText(getApplicationContext(), "Bluetooth desactivado", Toast.LENGTH_SHORT).show();
+            bluetooth = false;
+            cambiaColorBluetooth(Color.GRAY);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Bluetooth activado", Toast.LENGTH_SHORT).show();
+            bluetooth = true;
+            cambiaColorBluetooth(Color.BLUE);
+        }
+    }
+
+    public void cambiaColorBluetooth(int color){
+        ImageButton imageButtonBluetooth = (ImageButton) findViewById(R.id.imageButton_Bluetooth);
+        imageButtonBluetooth.setBackgroundColor(color);
     }
 
     public int getValuePreferenceColor(Context context) {
