@@ -42,8 +42,8 @@ public class Activity_cambia_estado extends AppCompatActivity {
 
         //cargar la sharedPreference para saber el color
         int id_preference = 0;
-        String desc_rojo = "Estado rojo            ";
-        String desc_verde = "Estado verde         ";
+        String desc_rojo = "  Estado rojo                ";
+        String desc_verde = "  Estado verde             ";
         //posibles cambios
         if(getValuePreferenceColor(getApplicationContext()) == R.drawable.verde)
         {
