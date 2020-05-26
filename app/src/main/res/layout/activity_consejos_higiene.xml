@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="37dp"
                 android:layout_marginTop="35dp"
-                android:text="Higiene personal:"
+                android:text="@string/higiene_personal"
                 android:textColor="#151515"
                 android:textSize="30dp"
                 app:layout_constraintStart_toStartOf="parent"
