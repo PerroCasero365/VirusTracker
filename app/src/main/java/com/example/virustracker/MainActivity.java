@@ -8,18 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -102,21 +97,24 @@ public class MainActivity extends AppCompatActivity
 
     public void GestionBluetooth(View v)
     {
+        Drawable azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
+        Drawable gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
+
         if(bluetooth){
             Toast.makeText(getApplicationContext(), "Bluetooth desactivado", Toast.LENGTH_SHORT).show();
             bluetooth = false;
-            cambiaColorBluetooth(Color.GRAY);
+            cambiaColorBluetooth(gris);
         }
         else{
             Toast.makeText(getApplicationContext(), "Bluetooth activado", Toast.LENGTH_SHORT).show();
             bluetooth = true;
-            cambiaColorBluetooth(Color.BLUE);
+            cambiaColorBluetooth(azul);
         }
     }
 
-    public void cambiaColorBluetooth(int color){
+    public void cambiaColorBluetooth(Drawable color){
         ImageButton imageButtonBluetooth = (ImageButton) findViewById(R.id.imageButton_Bluetooth);
-        imageButtonBluetooth.setBackgroundColor(color);
+        imageButtonBluetooth.setBackground(color);
     }
 
     public int getValuePreferenceColor(Context context) {
