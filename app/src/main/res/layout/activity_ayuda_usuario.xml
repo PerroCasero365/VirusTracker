@@ -17,7 +17,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="36dp"
-                android:text="Estas en ayuda usuario"
+                android:inputType="textMultiLine"
+                android:text="
+Esta aplicación tiene como idea principal la ayuda a
+combatir el coronavirus, para ello utilizamos el móvil
+como herramienta para rastrear los contactos sociales
+buscando puntos de posibles infecciones y se avisa a
+los posibles infectados.\n\n
+Hay 3 estados:\n
+    * VERDE (no existe contacto registrado con ningún \n
+       infectado)\n
+    * AMARILLO (ha habido contacto anterior con \n
+       algún infectado, por lo cual existe un riesgo de haber\n
+       sido contagiado)\n
+    * ROJO (el usuario es un contagio confirmado).\n"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
