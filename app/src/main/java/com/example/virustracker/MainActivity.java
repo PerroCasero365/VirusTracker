@@ -1,14 +1,19 @@
 package com.example.virustracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,6 +30,13 @@ public class MainActivity extends AppCompatActivity
 {
     boolean bluetooth = true;
     private String PREFS_KEY = "mispreferencias";
+    private final int REQUEST_ACCESS_FINE = 0;
+
+    Drawable azul;
+    Drawable gris;
+    BluetoothAdapter adaptador;
+    int ACTIVAR_BLUETOOTH = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,6 +44,20 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         redondear(getValuePreferenceColor(getApplicationContext()));
 
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ACCESS_FINE);
+
+        azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
+        gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
+        adaptador = BluetoothAdapter.getDefaultAdapter();
+
+        if(!adaptador.isEnabled())
+        {
+            cambiaColorBluetooth(gris);
+        } else
+        {
+            cambiaColorBluetooth(azul);
+        }
     }
 
     //redondea el imageview y se le pasa el R.drawable del color
@@ -118,10 +144,10 @@ public class MainActivity extends AppCompatActivity
 
     public void GestionBluetooth(View v)
     {
-        Drawable azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
-        Drawable gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
+        //Drawable azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
+        //Drawable gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
 
-        if(bluetooth){
+        /*if(bluetooth){
             Toast.makeText(getApplicationContext(), "Bluetooth desactivado", Toast.LENGTH_SHORT).show();
             bluetooth = false;
             cambiaColorBluetooth(gris);
@@ -130,6 +156,37 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Bluetooth activado", Toast.LENGTH_SHORT).show();
             bluetooth = true;
             cambiaColorBluetooth(azul);
+        }*/
+        if(!adaptador.isEnabled()){
+            Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(i, ACTIVAR_BLUETOOTH);
+            cambiaColorBluetooth(azul);
+            // bluetooth = false;
+        }
+        else{
+            adaptador.disable();
+            cambiaColorBluetooth(gris);
+            // bluetooth = true;
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_ACCESS_FINE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
     }
 
