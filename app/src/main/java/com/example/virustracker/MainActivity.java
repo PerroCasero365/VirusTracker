@@ -43,20 +43,66 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         redondear(getValuePreferenceColor(getApplicationContext()));
+        /*
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.BLUETOOTH_ADMIN)) {
+                Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(i, ACTIVAR_BLUETOOTH);
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.BLUETOOTH_ADMIN},
+                        REQUEST_ACCESS_FINE);
 
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ACCESS_FINE);
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ACCESS_FINE);
+        */
 
         azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
         gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
         adaptador = BluetoothAdapter.getDefaultAdapter();
 
-        if(!adaptador.isEnabled())
-        {
+        if(adaptador == null) {
+            Toast.makeText(getBaseContext(), "El dispositivo no soporta Bluetooth", Toast.LENGTH_LONG).show();
             cambiaColorBluetooth(gris);
-        } else
-        {
-            cambiaColorBluetooth(azul);
+        }
+        else{
+            if (!adaptador.isEnabled()) {
+                cambiaColorBluetooth(azul);
+            } else {
+                cambiaColorBluetooth(gris);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_ACCESS_FINE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
         }
     }
 
@@ -144,52 +190,22 @@ public class MainActivity extends AppCompatActivity
 
     public void GestionBluetooth(View v)
     {
-        //Drawable azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
-        //Drawable gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
-
-        /*if(bluetooth){
-            Toast.makeText(getApplicationContext(), "Bluetooth desactivado", Toast.LENGTH_SHORT).show();
-            bluetooth = false;
-            cambiaColorBluetooth(gris);
+        if(adaptador == null) {
+            Toast.makeText(getBaseContext(), "El dispositivo no soporta Bluetooth", Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(getApplicationContext(), "Bluetooth activado", Toast.LENGTH_SHORT).show();
-            bluetooth = true;
-            cambiaColorBluetooth(azul);
-        }*/
-        if(!adaptador.isEnabled()){
-            Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(i, ACTIVAR_BLUETOOTH);
-            cambiaColorBluetooth(azul);
-            // bluetooth = false;
-        }
-        else{
-            adaptador.disable();
-            cambiaColorBluetooth(gris);
-            // bluetooth = true;
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_ACCESS_FINE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
+            if (!adaptador.isEnabled()) {
+                Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(i, ACTIVAR_BLUETOOTH);
+                cambiaColorBluetooth(azul);
+                // bluetooth = false;
+            } else {
+                adaptador.disable();
+                cambiaColorBluetooth(gris);
+                // bluetooth = true;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
-
     public void cambiaColorBluetooth(Drawable color){
         ImageButton imageButtonBluetooth = (ImageButton) findViewById(R.id.imageButton_Bluetooth);
         imageButtonBluetooth.setBackground(color);
