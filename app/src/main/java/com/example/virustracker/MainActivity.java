@@ -28,6 +28,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.virustracker.UtilidadesBD.ConexionSQLiteHelper;
 import com.example.virustracker.UtilidadesBD.Utilidades;
 
@@ -42,12 +48,15 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
 {
     boolean bluetooth = true;
     private String PREFS_KEY = "mispreferencias";
     private final int REQUEST_ACCESS_FINE = 0;
+    public static String device_id = "43212";
 
     Drawable azul;
     Drawable gris;
@@ -106,6 +115,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         new Conexion().execute();
+        if(getValuePreferenceColor(getBaseContext()) == R.drawable.rojo){
+            Toast.makeText(getBaseContext(), "ESTA EN ROJO PAPU", Toast.LENGTH_LONG).show();
+            actualizaServer(device_id);
+        }
     }
 
     @Override
@@ -262,7 +275,7 @@ public class MainActivity extends AppCompatActivity
             o haciendo el ipconfig en el pc las descomentamos por si alguno de nosotros quiere hacer pruebas y que cada uno funcione
              con su propia IP */
             /* Host máquina Angel */
-            String host = "http://192.168.0.13/pruebaServer/consulta.php";
+            String host = "http://192.168.100.7/pruebaServer/consulta.php";
             /* Host Máquina Alan
             String host = "http://192.168.100.114/pruebaServer/consulta.php"; */
 
@@ -321,19 +334,62 @@ public class MainActivity extends AppCompatActivity
                     }
                 } else
                 {
-                    Toast.makeText(getApplicationContext(), "No hay dispositivos registrados", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No hay dispositivo registrados", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException jsone)
             {
                 Toast.makeText(getApplicationContext(), "Error en el JSON: " + jsone.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
-            Toast.makeText(getApplicationContext(), "Base de Datos actualizada.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Base de Datos actualizada.", Toast.LENGTH_SHORT).show();
         }
 
         /*protected String onPostExecute(Void result)
         {
             return null;
         }*/
+    }
+
+    public void actualizaServer(final String id)
+    {
+        /* Host máquina Angel */
+        String url = "http://192.168.100.7/pruebaServer/post.php";
+        /* Host Máquina Alan
+        String url = "http://192.168.100.114/pruebaServer/post.php"; */
+
+        RequestQueue queue;
+
+        queue = Volley.newRequestQueue(getApplicationContext());
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                //Toast.makeText(getApplicationContext(), "Respuesta del Server: " + response, Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener()
+        {
+            @Override
+            public void onErrorResponse(VolleyError error)
+            {
+                Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        })
+        {
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> info = new HashMap<String, String>();
+
+                /* En mi ejemplo obtenía la fecha desde un campo editText, pero creo que es mejor obtener la fecha de
+                "alta en el contagio" directamente según la hora del sistema en el servidor, por eso comento esa línea. */
+                // info.put("fecha", editFecha.getText().toString());
+                info.put("id", id);
+
+                return info;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 }

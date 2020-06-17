@@ -33,7 +33,7 @@ public class Activity_cambia_estado extends AppCompatActivity {
     private String PREFS_KEY = "mispreferencias";
 
     // Un simple String que represente el ID del dispositivo hasta que sepamos como obtener o generar el ID.
-    private String device_id = "16062020";
+    String device_id = MainActivity.device_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class Activity_cambia_estado extends AppCompatActivity {
         setContentView(R.layout.activity_cambia_estado);
         redondear(getValuePreferenceColor(getApplicationContext()));
         crearComponente();
+        //device_id = MainActivity.device_id;
     }
 
     public void crearComponente()
@@ -169,7 +170,7 @@ public class Activity_cambia_estado extends AppCompatActivity {
     public void actualizaServer(final String id)
     {
         /* Host máquina Angel */
-        String url = "http://192.168.0.13/pruebaServer/post.php";
+        String url = "http://192.168.100.7/pruebaServer/post.php";
         /* Host Máquina Alan
         String url = "http://192.168.100.114/pruebaServer/post.php"; */
 
@@ -182,7 +183,7 @@ public class Activity_cambia_estado extends AppCompatActivity {
             @Override
             public void onResponse(String response)
             {
-                Toast.makeText(getApplicationContext(), "Respuesta del Server: " + response, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Respuesta del Server: " + response, Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener()
         {
