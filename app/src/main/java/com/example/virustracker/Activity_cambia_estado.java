@@ -19,8 +19,21 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Activity_cambia_estado extends AppCompatActivity {
     private String PREFS_KEY = "mispreferencias";
+
+    // Un simple String que represente el ID del dispositivo hasta que sepamos como obtener o generar el ID.
+    private String device_id = "16062020";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +41,6 @@ public class Activity_cambia_estado extends AppCompatActivity {
         setContentView(R.layout.activity_cambia_estado);
         redondear(getValuePreferenceColor(getApplicationContext()));
         crearComponente();
-
-
     }
 
     public void crearComponente()
@@ -95,6 +106,10 @@ public class Activity_cambia_estado extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Se ha cambia tu estado a rojo", Toast.LENGTH_SHORT).show();
                     saveValuePreferenceColor(getApplicationContext(), R.drawable.rojo);
                     devolverValor(linearInterno);
+
+                    /* Cuando se cambia a estado rojo, se pasa el device_id al servidor para que este lo almacene en la tabla
+                    de infectados */
+                    actualizaServer(device_id);
                 }
             }
         });
@@ -151,6 +166,47 @@ public class Activity_cambia_estado extends AppCompatActivity {
         imageView.setImageDrawable(roundedDrawable);
     }
 
+    public void actualizaServer(final String id)
+    {
+        /* Host máquina Angel */
+        String url = "http://192.168.0.13/pruebaServer/post.php";
+        /* Host Máquina Alan
+        String url = "http://192.168.100.114/pruebaServer/post.php"; */
 
+        RequestQueue queue;
+
+        queue = Volley.newRequestQueue(getApplicationContext());
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                Toast.makeText(getApplicationContext(), "Respuesta del Server: " + response, Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener()
+        {
+            @Override
+            public void onErrorResponse(VolleyError error)
+            {
+                Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        })
+        {
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> info = new HashMap<String, String>();
+
+                /* En mi ejemplo obtenía la fecha desde un campo editText, pero creo que es mejor obtener la fecha de
+                "alta en el contagio" directamente según la hora del sistema en el servidor, por eso comento esa línea. */
+                // info.put("fecha", editFecha.getText().toString());
+                info.put("id", id);
+
+                return info;
+            }
+        };
+
+        queue.add(stringRequest);
+    }
 
 }
