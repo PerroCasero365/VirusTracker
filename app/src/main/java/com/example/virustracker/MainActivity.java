@@ -53,10 +53,10 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
 {
-    boolean bluetooth = true;
+    //boolean bluetooth = true;
     private String PREFS_KEY = "mispreferencias";
     private final int REQUEST_ACCESS_FINE = 0;
-    public static String device_id = "43212";
+    public static  String device_id;
 
     Drawable azul;
     Drawable gris;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        device_id = getValuePreferenceDeviceId(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         redondear(getValuePreferenceColor(getApplicationContext()));
@@ -251,6 +252,11 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
         return  preferences.getInt("color", R.drawable.verde);
     }
+    public String getValuePreferenceDeviceId(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        return  preferences.getString("device_id", "default");
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

@@ -13,6 +13,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 public class Pantalla_carga extends AppCompatActivity
 {
     private String PREFS_KEY = "mispreferencias";
@@ -36,8 +38,9 @@ public class Pantalla_carga extends AppCompatActivity
                 if (!muestra){
                     intent = new Intent(Pantalla_carga.this, MainActivity.class);
                 }else{
+                    String device_id = UUID.randomUUID().toString();
                     intent = new Intent(Pantalla_carga.this, Activity_encuesta_positivo.class);
-                    saveValuePreference(getApplicationContext(), false);
+                    saveValuePreference(getApplicationContext(), false, device_id);
                 }
 
                 startActivity(intent);
@@ -57,12 +60,13 @@ public class Pantalla_carga extends AppCompatActivity
         virus.startAnimation(animation);
     }
 
-    public void saveValuePreference(Context context, Boolean mostrar) {
+    public void saveValuePreference(Context context, Boolean mostrar, String id) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor;
         editor = settings.edit();
         editor.putBoolean("encuesta", mostrar);
         editor.putInt("color", R.drawable.verde);
+        editor.putString("device_id", id);
         editor.commit();
     }
 
