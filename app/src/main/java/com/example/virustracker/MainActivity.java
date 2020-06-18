@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity
 
         new Conexion().execute();
         if(getValuePreferenceColor(getBaseContext()) == R.drawable.rojo){
-            Toast.makeText(getBaseContext(), "ESTA EN ROJO PAPU", Toast.LENGTH_LONG).show();
             actualizaServer(device_id);
         }
     }
@@ -191,6 +190,11 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.menu_ayuda:
                 intent = new Intent(this, Activity_ayuda_usuario.class);
+                startActivity(intent);
+                break;
+
+            case R.id.menu_ajustes:
+                intent = new Intent(this, Activity_ajustes.class);
                 startActivity(intent);
                 break;
         }
