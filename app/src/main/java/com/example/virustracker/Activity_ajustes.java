@@ -47,6 +47,7 @@ public class Activity_ajustes extends AppCompatActivity {
         }
     }
 
+    //Esto cuando funciene el sharedpreferences se va a la puta
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {

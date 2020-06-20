@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import java.util.List;
 
 public class Activity_wifi extends AppCompatActivity
 {
+    StringBuilder wifisGuardadas = new StringBuilder();
+    private String PREFS_KEY = "mispreferencias";
     private WifiManager manejadorWifi;
     private ListView listViewRedes;
     private ListView listViewRedesGuardadas;
@@ -50,24 +53,11 @@ public class Activity_wifi extends AppCompatActivity
 
         arrayListRedesGuardadas = (ArrayList<String>) this.getIntent().getSerializableExtra("misRedes");
 
-        // Con esta condición se puede comprobar si el array tiene valores o si está vacío (es la primera vez, o no se han seleccionado redes)
-        /*if (arrayListRedesGuardadas == null)
-        {
-            redHogar.setText(Integer.toString(arrayListRedesGuardadas.size()));
-        } else
-        {
-            redHogar.setText("0");
-        }*/
-
         // Creamos un nuevo ArrayAdapter y comprobamos si está vacío o no, si no lo está (contiene redes) las mostramos en el ListView específico para las redes.
         adaptadorGuardados = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1 , arrayListRedesGuardadas);
         if (!arrayListRedesGuardadas.isEmpty())
         {
             listViewRedesGuardadas.setAdapter(adaptadorGuardados);
-        }
-        else
-        {
-
         }
 
         // Gestor de eventos del botón de Escanear Redes, el cuál busca las redes cercanas al dispositivo y las muestra en pantalla.
@@ -89,6 +79,11 @@ public class Activity_wifi extends AppCompatActivity
                 Intent i = new Intent();
                 i.putExtra("nuevasRedes", arrayListRedesGuardadas);
                 setResult(RESULT_OK, i);
+                for(String s : arrayListRedesGuardadas){
+                    wifisGuardadas.append(s);
+                    wifisGuardadas.append(",");
+                }
+                saveValuePreferenceWifi(getApplicationContext());
                 finish();
             }
         });
@@ -160,4 +155,17 @@ public class Activity_wifi extends AppCompatActivity
             }
         }
     };
+
+    public void saveValuePreferenceWifi(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = settings.edit();
+        editor.putString("redesWifi", wifisGuardadas.toString());
+        editor.commit();
+    }
+    public String getValuePreferenceWifi(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        return  preferences.getString("redesWifi", "default");
+    }
+
 }
