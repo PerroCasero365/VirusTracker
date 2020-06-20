@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity
         }
             //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ACCESS_FINE);
         */
-
         azul = getResources().getDrawable( R.drawable.rounded_imagebutton_azul);
         gris = getResources().getDrawable( R.drawable.rounded_imagebutton_gris);
         adaptador = BluetoothAdapter.getDefaultAdapter();

@@ -30,7 +30,9 @@ Hay 3 estados:\n
     * AMARILLO (ha habido contacto anterior con \n
        algún infectado, por lo cual existe un riesgo de haber\n
        sido contagiado)\n
-    * ROJO (el usuario es un contagio confirmado).\n"
+    * ROJO (el usuario es un contagio confirmado).\n
+Para que la APP pueda encontar redes WIFI debes activar\n
+los permisos de Localización"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
