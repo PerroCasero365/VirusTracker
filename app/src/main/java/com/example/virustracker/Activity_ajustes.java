@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class Activity_ajustes extends AppCompatActivity {
+    private String PREFS_KEY = "mispreferencias";
     Intent intent;
     // Wifi
     WifiManager wifi;
@@ -37,7 +39,12 @@ public class Activity_ajustes extends AppCompatActivity {
     public void onClickAjustes(View v){
         switch(v.getId()){
             case R.id.button_reiniciar:
-                    //Sharedpreferences a verde
+                //Sharedpreferences a verde
+                saveValuePreferenceColorVerde(getApplicationContext());
+                Intent i = new Intent();
+                i.putExtra("nuevoEstado", R.drawable.verde);
+                setResult(2001, i);
+                finish();
                 break;
             case R.id.button_wifi:
                 intent = new Intent(this, Activity_wifi.class);
@@ -89,4 +96,12 @@ public class Activity_ajustes extends AppCompatActivity {
             }
         }
     };
+
+    public void saveValuePreferenceColorVerde(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = settings.edit();
+        editor.putInt("color", R.drawable.verde);
+        editor.commit();
+    }
 }

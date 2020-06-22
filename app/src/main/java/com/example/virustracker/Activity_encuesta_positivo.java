@@ -14,8 +14,6 @@ public class Activity_encuesta_positivo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encuesta_positivo);
-
-
     }
 
     public void respuesta(View v)

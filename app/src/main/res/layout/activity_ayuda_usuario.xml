@@ -31,8 +31,15 @@ Hay 3 estados:\n
        algún infectado, por lo cual existe un riesgo de haber\n
        sido contagiado)\n
     * ROJO (el usuario es un contagio confirmado).\n
+El usuario podrá volver a verde desde el estado ROJO \n
+a traves de los ajustes una vez haya pasado la enfermedad.\n\n
 Para que la APP pueda encontar redes WIFI debes activar\n
-los permisos de Localización"
+los permisos de Localización.\n
+Las redes wifi guardadas por el ususario harán que la \n
+aplicación deje de buscar dispositivos cercanos, ya que,\n
+tomará estos lugares como lugares seguros.\n
+
+"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>

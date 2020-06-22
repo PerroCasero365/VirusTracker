@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.menu_ajustes:
                 intent = new Intent(this, Activity_ajustes.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1001);
                 break;
         }
         return super.onOptionsItemSelected(item);

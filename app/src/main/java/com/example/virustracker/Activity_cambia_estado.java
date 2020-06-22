@@ -66,10 +66,7 @@ public class Activity_cambia_estado extends AppCompatActivity {
             linearExterno.addView(generarEstado(desc_verde, R.drawable.verde, "verde"));
             linearExterno.addView(generarEstado(desc_rojo, R.drawable.rojo, "rojo"));
         }
-
         linearExterno.addView(linearInterno);
-
-
     }
 
 
@@ -160,8 +157,8 @@ public class Activity_cambia_estado extends AppCompatActivity {
         Bitmap originalBitmap = ((BitmapDrawable) originalDrawable).getBitmap();
 
         //creamos el drawable redondeado
-        RoundedBitmapDrawable roundedDrawable = RoundedBitmapDrawableFactory.create(getResources(), originalBitmap);
         float num = 2000;
+        RoundedBitmapDrawable roundedDrawable = RoundedBitmapDrawableFactory.create(getResources(), originalBitmap);
         //asignamos el CornerRadius
         roundedDrawable.setCornerRadius(num);
         imageView.setImageDrawable(roundedDrawable);
