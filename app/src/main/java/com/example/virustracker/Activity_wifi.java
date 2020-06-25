@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Activity_wifi extends AppCompatActivity
@@ -66,7 +67,13 @@ public class Activity_wifi extends AppCompatActivity
         listViewRedes = findViewById(R.id.RedesDisponiblesLV);
         listViewRedesGuardadas = findViewById(R.id.RedesGuardadasLV);
 
-        arrayListRedesGuardadas = (ArrayList<String>) this.getIntent().getSerializableExtra("misRedes");
+        String[] redGuardadas = getValuePreferenceWifi(getApplicationContext()).split(",");
+        List<String> fixedLenghtList = Arrays.asList(redGuardadas);
+        arrayListRedesGuardadas = new ArrayList<String>(fixedLenghtList);
+        if(arrayListRedesGuardadas.get(0).equals("default"))
+            arrayListRedesGuardadas.clear();
+
+        //arrayListRedesGuardadas = (ArrayList<String>) this.getIntent().getSerializableExtra("misRedes");
 
         // Creamos un nuevo ArrayAdapter y comprobamos si está vacío o no, si no lo está (contiene redes) las mostramos en el ListView específico para las redes.
         adaptadorGuardados = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1 , arrayListRedesGuardadas);
@@ -91,9 +98,6 @@ public class Activity_wifi extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent();
-                i.putExtra("nuevasRedes", arrayListRedesGuardadas);
-                setResult(RESULT_OK, i);
                 for(String s : arrayListRedesGuardadas){
                     wifisGuardadas.append(s);
                     wifisGuardadas.append(",");

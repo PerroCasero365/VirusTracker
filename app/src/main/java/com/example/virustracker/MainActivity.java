@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         // Hacer aquí el cursor
                         JSONArray dispositivos = resultadoJson.getJSONArray("dispositivos");
-                        Cursor c = db.rawQuery("SELECT DEVICE_ID FROM dispositivosInfectados", null);
+                        Cursor c = db.rawQuery("SELECT DEVICE_ID FROM dispositivosCercanos", null);
 
                         // Si el json ya tiene valores eliminamos la tabla sqlite y luego se va creando de nuevo
                         //db.execSQL(Utilidades.ELIMINAR_TABLA_USUARIO);

@@ -48,23 +48,8 @@ public class Activity_ajustes extends AppCompatActivity {
                 break;
             case R.id.button_wifi:
                 intent = new Intent(this, Activity_wifi.class);
-                intent.putExtra("misRedes", redes);
-                startActivityForResult(intent, 1);
+                startActivity(intent);
                 break;
-        }
-    }
-
-    //Esto cuando funciene el sharedpreferences se va a la puta
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == 1)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                // Obtengo las redes almacenadas en el activity Activity_ajustes y lo almaceno en el array de redes.
-                redes = (ArrayList<String>) data.getExtras().getSerializable("nuevasRedes");
-            }
         }
     }
 
