@@ -43,7 +43,7 @@ public class Activity_ajustes extends AppCompatActivity {
                 saveValuePreferenceColorVerde(getApplicationContext());
                 Intent i = new Intent();
                 i.putExtra("nuevoEstado", R.drawable.verde);
-                setResult(2001, i);
+                setResult(3001, i);
                 finish();
                 break;
             case R.id.button_wifi:

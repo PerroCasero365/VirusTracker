@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity
         }
         else{
             if (!adaptador.isEnabled()) {
-                cambiaColorBluetooth(azul);
-            } else {
                 cambiaColorBluetooth(gris);
+            } else {
+                cambiaColorBluetooth(azul);
             }
         }
 
@@ -272,6 +272,59 @@ public class MainActivity extends AppCompatActivity
                 redondear(getValuePreferenceColor(getApplicationContext()));
             }
         }
+        if(resultCode == 3001 && requestCode == 1001){
+            if (data.hasExtra("nuevoEstado"))
+            {
+                redondear(getValuePreferenceColor(getApplicationContext()));
+                eliminarID(device_id);
+                //Toast.makeText(getApplicationContext(), "ELIMINARID", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void eliminarID(final String id)
+    {
+        /* Host máquina Jorge*/
+        String url = "http://192.168.100.7/pruebaServer/delete.php";
+        /* Host máquina Angel */
+        //String url = "http://192.168.0.36/pruebaServer/delete.php";
+        /* Host Máquina Alan
+        String url = "http://192.168.100.114/pruebaServer/delete.php"; */
+
+        RequestQueue queue;
+
+        queue = Volley.newRequestQueue(getApplicationContext());
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                Toast.makeText(getApplicationContext(),  response, Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener()
+        {
+            @Override
+            public void onErrorResponse(VolleyError error)
+            {
+                Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        })
+        {
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> info = new HashMap<String, String>();
+
+                /* En mi ejemplo obtenía la fecha desde un campo editText, pero creo que es mejor obtener la fecha de
+                "alta en el contagio" directamente según la hora del sistema en el servidor, por eso comento esa línea. */
+                // info.put("fecha", editFecha.getText().toString());
+                info.put("id", id);
+
+                return info;
+            }
+        };
+
+        queue.add(stringRequest);
     }
 
     class Conexion extends AsyncTask<String, String, String>
