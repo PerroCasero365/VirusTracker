@@ -10,11 +10,16 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -22,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,8 +55,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -67,6 +76,11 @@ public class MainActivity extends AppCompatActivity
     // Base de Datos
     ConexionSQLiteHelper baseDatos;
 
+    //tiempo
+    Timer temporizador;
+    TimerTask tarea;
+    Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -74,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         redondear(getValuePreferenceColor(getApplicationContext()));
-        baseDatos = new ConexionSQLiteHelper(this, "virusTrackerBBDD", null, 2);
+        baseDatos = new ConexionSQLiteHelper(this, "virusTrackerBBDD", null, 3);
         /*
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -119,6 +133,13 @@ public class MainActivity extends AppCompatActivity
         if(getValuePreferenceColor(getBaseContext()) == R.drawable.rojo){
             actualizaServer(device_id);
         }
+
+        //Registra el broadcast receiver
+        IntentFilter filtro = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, filtro);
+
+        //Empieza el temporizador en segundo plano
+        iniciarTemporizador();
     }
 
     @Override
@@ -372,41 +393,65 @@ public class MainActivity extends AppCompatActivity
             // Parseamos la información del JSON aquí
             try
             {
+                int contadorDispositivos = 0;
                 JSONObject resultadoJson = new JSONObject(result);
                 int exito = resultadoJson.getInt("exito");
                 SQLiteDatabase db = baseDatos.getWritableDatabase();
 
                 // en el php del server hay un array 'respuesta' donde el índice éxito tiene un valor de 1,
                 // ese valor se pone a 1 cuándo el JSON ya posee valores y a 0 si está vacío.
-                if (exito == 1)
+                if (db != null)
                 {
-                    JSONArray dispositivos = resultadoJson.getJSONArray("dispositivos");
-
-                    //si el json ya tiene valores eliminamos la tabla sqlite y luego se va creando de nuevo
-                    db.execSQL(Utilidades.ELIMINAR_TABLA_USUARIO);
-                    db.execSQL(Utilidades.CREAR_TABLA_USUARIO);
-
-                    for (int i = 0; i < dispositivos.length(); i++)
+                    if (exito == 1)
                     {
-                        JSONObject dispositivo = dispositivos.getJSONObject(i);
-                        int id = dispositivo.getInt("DEVICE_ID");
-                        String fecha = dispositivo.getString("DATE_STATUS");
+                        // Hacer aquí el cursor
+                        JSONArray dispositivos = resultadoJson.getJSONArray("dispositivos");
+                        Cursor c = db.rawQuery("SELECT DEVICE_ID FROM dispositivosInfectados", null);
 
-                        db.execSQL("INSERT INTO dispositivosInfectados (DEVICE_ID, DATE_STATUS)" +
-                                "VALUES ('" + id + "', '" + fecha + "')");
+                        // Si el json ya tiene valores eliminamos la tabla sqlite y luego se va creando de nuevo
+                        //db.execSQL(Utilidades.ELIMINAR_TABLA_USUARIO);
+                        //db.execSQL(Utilidades.CREAR_TABLA_USUARIO);
+
+                        if (c.moveToFirst())
+                        {
+                            for (int disp = 0; disp < dispositivos.length(); disp++)
+                            {
+                                for (int cur = 0; cur < c.getCount(); cur++)
+                                {
+                                    // Comparar el ID del JSON con el cursor, otro for hasta la longitud del cursor.
+                                    JSONObject dispositivo = dispositivos.getJSONObject(disp);
+                                    String id = dispositivo.getString("DEVICE_ID");
+                                    String fecha = dispositivo.getString("DATE_STATUS");
+
+                                    if (c.getString(cur).equals(id))
+                                    {
+                                        contadorDispositivos++;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (contadorDispositivos == 0)
+                        {
+                            Toast.makeText(getApplicationContext(), "Se ha encontrado una coincidencia entre los dispositivos contagiados y los dispositivos con los que has tenido contacto.", Toast.LENGTH_SHORT).show();
+                        } else
+                        {
+                            Toast.makeText(getApplicationContext(), "No se ha encontrado una coincidencia con ningún dispositivo infectado.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                } else
-                {
-                    Toast.makeText(getApplicationContext(), "No hay dispositivo registrados", Toast.LENGTH_SHORT).show();
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(), "No hay dispositivos registrados", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } catch (JSONException jsone)
             {
-                Toast.makeText(getApplicationContext(), "Error en el JSON: " + jsone.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Error en el JSON: " + jsone.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             //Toast.makeText(getApplicationContext(), "Base de Datos actualizada.", Toast.LENGTH_SHORT).show();
         }
-
         /*protected String onPostExecute(Void result)
         {
             return null;
@@ -454,5 +499,113 @@ public class MainActivity extends AppCompatActivity
         };
 
         queue.add(stringRequest);
+    }
+
+    //Broadcast para encontrar los bluetooth disponibles
+    public final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Toast.makeText(getApplicationContext(),"Buscando dispositivos...", Toast.LENGTH_SHORT).show();
+
+            String accion = intent.getAction();
+            //Si encuentra algun dispositivo entra
+            if(BluetoothDevice.ACTION_FOUND.equals(accion))
+            {
+                //Se ha encontrado dispositivo y se obtiene la info del intent
+                BluetoothDevice dispositivo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String nomDisp = dispositivo.getName();
+
+                //String macDis = dispositivo.getAddress();
+
+                //pasamos el nomb del dispositivo para guardarlo en la bbdd
+                insertarNombre(nomDisp);
+
+            }
+        }
+    };
+
+    //ESTO SE HACE EN SEGUNDO PLANO
+    public void iniciarTemporizador()
+    {
+        temporizador = new Timer();
+        tarea = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        //Inicia el broadcast
+                        if(adaptador == null) {
+
+                        }else {
+                            if (adaptador.isDiscovering()) {
+                                //Si el Bluetooth ya está en modo discover, lo cancelamos para iniciarlo de nuevo
+                                adaptador.cancelDiscovery();
+                            }
+                            adaptador.startDiscovery();
+                        }
+                    }
+                });
+            }
+        };
+        temporizador.schedule(tarea,0,60000);
+        //empieza desde que inicia el metodo (delay 0)
+        //periodo cada 60 segundos. 10seg -> 10000
+
+    }
+
+    //Método para guardar el dispositivo que se le pasa en la base de datos
+    public void insertarNombre(String nomb)
+    {
+        String fechaActual = java.text.DateFormat.getDateTimeInstance().format(new Date());
+
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+
+        try
+        {
+            //COMPROBAR QUE NO ESTE EN LA BASE DE DATOS (FUNCIONA)
+            Cursor cursor = db.rawQuery("SELECT * FROM "+Utilidades.TABLA_USUARIO+" WHERE DEVICE_ID = ?",new String[]{nomb});
+
+            //Si queremos comprobar cuantos hay
+            //Cursor c = db.rawQuery("SELECT * FROM " + Utilidades.TABLA_USUARIO, null);
+
+
+            //SI DEVUELVE ALGÚN VALOR SIGNIFICA QUE YA EXISTE Y NO LO INSERTA
+            if(cursor.getCount()>0)
+            {
+                Toast.makeText(this,nomb+ " ya existe, se actualizan las fechas", Toast.LENGTH_SHORT).show();
+
+                String[]args = new String[]{nomb};
+
+                //ACTUALIZAMOS DATEIN CON LA FECHA ACTUAL Y DATE OUT A NULL
+                //Establecemos los campos-valores a actualizar
+                ContentValues actualiza = new ContentValues();
+                actualiza.put(Utilidades.CAMPO_DATE_IN,fechaActual);
+                actualiza.put(Utilidades.CAMPO_DATE_OUT,"null");
+
+                //Actualizamos el registro en la base de datos
+                db.update(Utilidades.TABLA_USUARIO, actualiza, Utilidades.CAMPO_DEVICE_ID+"=?", args);
+            }
+            else
+            {
+                Toast.makeText(this,"Inserta "+nomb, Toast.LENGTH_SHORT).show();
+
+                //INSERTAR
+                ContentValues nuevo = new ContentValues();
+
+                //COMO NO SE COMO FUNCIONAN BIEN DATE_IN Y DATE_OUT PONGO LAS DOS CON LA FECHA ACTUAL CUANDO SE AÑADE
+                nuevo.put(Utilidades.CAMPO_DEVICE_ID, nomb);
+                nuevo.put(Utilidades.CAMPO_DATE_IN, fechaActual);
+                nuevo.put(Utilidades.CAMPO_DATE_OUT, fechaActual);
+
+                db.insert(Utilidades.TABLA_USUARIO, null, nuevo);
+            }
+
+        }catch (Exception e)
+        {
+            Toast.makeText(this,nomb+ "Error al trabajar con la base de datos", Toast.LENGTH_SHORT).show();
+        }
     }
 }
