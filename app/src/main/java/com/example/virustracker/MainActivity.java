@@ -321,14 +321,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(String response)
             {
-                Toast.makeText(getApplicationContext(),  response, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),  response, Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener()
         {
             @Override
             public void onErrorResponse(VolleyError error)
             {
-                Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         })
         {
@@ -434,23 +434,24 @@ public class MainActivity extends AppCompatActivity
 
                         if (contadorDispositivos == 0)
                         {
-                            if(getValuePreferenceColor(getApplicationContext()) == R.drawable.verde)
+                            if(getValuePreferenceColor(getApplicationContext()) == R.drawable.verde) {
                                 saveValuePreferenceColor(getApplicationContext(), R.drawable.amarillo);
                                 redondear(getValuePreferenceColor(getApplicationContext()));
-                            //Toast.makeText(getApplicationContext(), "Se ha encontrado una coincidencia entre los dispositivos contagiados y los dispositivos con los que has tenido contacto.", Toast.LENGTH_SHORT).show();
+                            }
+                            Toast.makeText(getApplicationContext(), "Se ha encontrado una coincidencia entre los dispositivos contagiados y los dispositivos con los que has tenido contacto.", Toast.LENGTH_SHORT).show();
                         } else
                         {
-                            Toast.makeText(getApplicationContext(), "No se ha encontrado una coincidencia con ningún dispositivo infectado.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "No se ha encontrado una coincidencia con ningún dispositivo infectado.", Toast.LENGTH_SHORT).show();
                         }
                     }
                     else
                     {
-                        Toast.makeText(getApplicationContext(), "No hay dispositivos registrados", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "No hay dispositivos registrados", Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch (JSONException jsone)
             {
-                Toast.makeText(getApplicationContext(), "Error en el JSON: " + jsone.getMessage(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Error en el JSON: " + jsone.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             //Toast.makeText(getApplicationContext(), "Base de Datos actualizada.", Toast.LENGTH_SHORT).show();
@@ -578,7 +579,7 @@ public class MainActivity extends AppCompatActivity
             //SI DEVUELVE ALGÚN VALOR SIGNIFICA QUE YA EXISTE Y NO LO INSERTA
             if(cursor.getCount()>0)
             {
-                Toast.makeText(this,nomb+ " ya existe, se actualizan las fechas", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,nomb+ " ya existe, se actualizan las fechas", Toast.LENGTH_SHORT).show();
 
                 String[]args = new String[]{nomb};
 
@@ -593,7 +594,7 @@ public class MainActivity extends AppCompatActivity
             }
             else
             {
-                Toast.makeText(this,"Inserta "+nomb, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"Inserta "+nomb, Toast.LENGTH_SHORT).show();
 
                 //INSERTAR
                 ContentValues nuevo = new ContentValues();
@@ -608,7 +609,7 @@ public class MainActivity extends AppCompatActivity
 
         }catch (Exception e)
         {
-            Toast.makeText(this,nomb+ "Error al trabajar con la base de datos", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this,nomb+ "Error al trabajar con la base de datos", Toast.LENGTH_SHORT).show();
         }
     }
 
