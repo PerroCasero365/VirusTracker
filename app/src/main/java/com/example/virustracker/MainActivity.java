@@ -434,7 +434,10 @@ public class MainActivity extends AppCompatActivity
 
                         if (contadorDispositivos == 0)
                         {
-                            Toast.makeText(getApplicationContext(), "Se ha encontrado una coincidencia entre los dispositivos contagiados y los dispositivos con los que has tenido contacto.", Toast.LENGTH_SHORT).show();
+                            if(getValuePreferenceColor(getApplicationContext()) == R.drawable.verde)
+                                saveValuePreferenceColor(getApplicationContext(), R.drawable.amarillo);
+                                redondear(getValuePreferenceColor(getApplicationContext()));
+                            //Toast.makeText(getApplicationContext(), "Se ha encontrado una coincidencia entre los dispositivos contagiados y los dispositivos con los que has tenido contacto.", Toast.LENGTH_SHORT).show();
                         } else
                         {
                             Toast.makeText(getApplicationContext(), "No se ha encontrado una coincidencia con ningún dispositivo infectado.", Toast.LENGTH_SHORT).show();
@@ -607,5 +610,13 @@ public class MainActivity extends AppCompatActivity
         {
             Toast.makeText(this,nomb+ "Error al trabajar con la base de datos", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void saveValuePreferenceColor(Context context, int color) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = settings.edit();
+        editor.putInt("color", color);
+        editor.commit();
     }
 }
